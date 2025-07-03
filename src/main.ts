@@ -56,6 +56,8 @@ async function bootstrap() {
     compression(),
   );
 
+await app.listen(process.env.SERVER_PORT || 8080, '0.0.0.0');
+  
   app.set('view engine', 'hbs');
   app.set('views', join(ROOT_DIR, 'views'));
   app.use(express.static(join(ROOT_DIR, 'public')));
