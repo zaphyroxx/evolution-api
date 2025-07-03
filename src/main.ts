@@ -55,7 +55,7 @@ async function bootstrap() {
     json({ limit: '136mb' }),
     compression(),
   );
-app.listen(process.env.SERVER_PORT || 8080, '0.0.0.0');
+
   app.set('view engine', 'hbs');
   app.set('views', join(ROOT_DIR, 'views'));
   app.use(express.static(join(ROOT_DIR, 'public')));
@@ -148,7 +148,9 @@ app.listen(process.env.SERVER_PORT || 8080, '0.0.0.0');
     Sentry.setupExpressErrorHandler(app);
   }
 
-  server.listen(httpServer.PORT, () => logger.log(httpServer.TYPE.toUpperCase() + ' - ON: ' + httpServer.PORT));
+  server.listen(httpServer.PORT, () => {
+  logger.log(httpServer.TYPE.toUpperCase() + ' - ON: ' + httpServer.PORT);
+});
 
   initWA();
 
