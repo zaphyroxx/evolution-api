@@ -15,18 +15,18 @@ export class EvolutionBotController extends BaseChatbotController<EvolutionBot, 
   ) {
     super(prismaRepository, waMonitor);
 
-    this.botRepository = this.prismaRepository.evolutionBot;
-    this.settingsRepository = this.prismaRepository.evolutionBotSetting;
-    this.sessionRepository = this.prismaRepository.integrationSession;
+    // this.botRepository = this.prismaRepository.evolutionBot; // Removed as it's initialized in BaseChatbotController
+    // this.settingsRepository = this.prismaRepository.evolutionBotSetting; // Removed as it's initialized in BaseChatbotController
+    // this.sessionRepository = this.prismaRepository.integrationSession; // Removed as it's initialized in BaseChatbotController
   }
 
   public readonly logger = new Logger('EvolutionBotController');
   protected readonly integrationName = 'EvolutionBot';
 
   integrationEnabled = true; // Set to true by default or use config value if available
-  botRepository: any;
-  settingsRepository: any;
-  sessionRepository: any;
+  // botRepository: any; // Removed as it's declared in BaseChatbotController
+  // settingsRepository: any; // Removed as it's declared in BaseChatbotController
+  // sessionRepository: any; // Removed as it's declared in BaseChatbotController
   userMessageDebounce: { [key: string]: { message: string; timeoutId: NodeJS.Timeout } } = {};
 
   // Implementation of abstract methods required by BaseChatbotController
