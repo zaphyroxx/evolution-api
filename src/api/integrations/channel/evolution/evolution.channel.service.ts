@@ -37,7 +37,7 @@ export class EvolutionStartupService extends ChannelStartupService {
     this.client = null;
   }
 
-  public client: any;
+  override public client: any = null;
 
   public stateConnection: wa.StateConnection = { state: 'open' };
 
@@ -76,18 +76,18 @@ export class EvolutionStartupService extends ChannelStartupService {
     this.instance.businessId = instance.businessId;
 
     if (this.configService.get<Chatwoot>('CHATWOOT').ENABLED && this.localChatwoot?.enabled) {
-      this.chatwootService.eventWhatsapp(
-        Events.STATUS_INSTANCE,
-        {
-          instanceName: this.instance.name,
-          instanceId: this.instance.id,
-          integration: instance.integration,
-        },
-        {
-          instance: this.instance.name,
-          status: 'created',
-        },
-      );
+this.chatwootService.eventWhatsapp(
+  Events.STATUS_INSTANCE,
+  {
+    instanceName: this.instance.name,
+    instanceId: this.instance.id,
+    integration: instance.integration,
+  } as Partial<InstanceDto>,
+  {
+    instance: this.instance.name,
+    status: 'created',
+  },
+);
     }
   }
 
