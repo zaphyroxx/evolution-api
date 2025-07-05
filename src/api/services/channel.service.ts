@@ -23,10 +23,10 @@ import { CacheService } from './cache.service';
 
 export class ChannelStartupService {
   constructor(
-    public readonly configService: ConfigService,
-    public readonly eventEmitter: EventEmitter2,
-    public readonly prismaRepository: PrismaRepository,
-    public readonly chatwootCache: CacheService,
+    declare public configService: ConfigService,
+    declare public eventEmitter: EventEmitter2,
+    declare public prismaRepository: PrismaRepository,
+    declare public chatwootCache: CacheService,
   ) {}
 
   public readonly logger = new Logger('ChannelStartupService');
@@ -51,7 +51,7 @@ export class ChannelStartupService {
 
   public difyService = new DifyService(waMonitor, this.prismaRepository, this.configService, this.openaiService);
 
-  public setInstance(instance: InstanceDto) {
+  public setInstance(instance: Partial<InstanceDto>) {
     this.logger.setInstance(instance.instanceName);
 
     this.instance.name = instance.instanceName;
