@@ -297,7 +297,7 @@ export class WAMonitoringService {
             token: instanceData.token,
             number: instanceData.number,
             businessId: instanceData.businessId,
-          };
+          } as Partial<InstanceDto>;
 
           this.setInstance(instance);
         }),
@@ -325,7 +325,7 @@ export class WAMonitoringService {
           token: instance.token,
           number: instance.number,
           businessId: instance.businessId,
-        });
+        } as Partial<InstanceDto>);
       }),
     );
   }
@@ -349,7 +349,7 @@ export class WAMonitoringService {
           integration: instance.integration,
           token: instance.token,
           businessId: instance.businessId,
-        });
+        } as Partial<InstanceDto>);
       }),
     );
   }
