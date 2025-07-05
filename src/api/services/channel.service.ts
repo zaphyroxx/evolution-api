@@ -23,10 +23,10 @@ import { CacheService } from './cache.service';
 
 export class ChannelStartupService {
   constructor(
-    declare public configService: ConfigService,
-    declare public eventEmitter: EventEmitter2,
-    declare public prismaRepository: PrismaRepository,
-    declare public chatwootCache: CacheService,
+    public configService: ConfigService,
+    public eventEmitter: EventEmitter2,
+    public prismaRepository: PrismaRepository,
+    public chatwootCache: CacheService,
   ) {}
 
   public readonly logger = new Logger('ChannelStartupService');
