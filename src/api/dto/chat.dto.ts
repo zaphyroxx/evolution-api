@@ -118,7 +118,7 @@ export class SendPresenceDto extends Metadata {
 }
 
 export class UpdateMessageDto extends Metadata {
-  number: string;
+  declare number: string;
   key: proto.IMessageKey;
   text: string;
 }
