@@ -20,18 +20,18 @@ export class TypebotController extends BaseChatbotController<TypebotModel, Typeb
   ) {
     super(prismaRepository, waMonitor);
 
-    this.botRepository = this.prismaRepository.typebot;
-    this.settingsRepository = this.prismaRepository.typebotSetting;
-    this.sessionRepository = this.prismaRepository.integrationSession;
+    // this.botRepository = this.prismaRepository.typebot; // Removed as it's initialized in BaseChatbotController
+    // this.settingsRepository = this.prismaRepository.typebotSetting; // Removed as it's initialized in BaseChatbotController
+    // this.sessionRepository = this.prismaRepository.integrationSession; // Removed as it's initialized in BaseChatbotController
   }
 
   public readonly logger = new Logger('TypebotController');
   protected readonly integrationName = 'Typebot';
 
   integrationEnabled = configService.get<Typebot>('TYPEBOT').ENABLED;
-  botRepository: any;
-  settingsRepository: any;
-  sessionRepository: any;
+  // botRepository: any; // Removed as it's declared in BaseChatbotController
+  // settingsRepository: any; // Removed as it's declared in BaseChatbotController
+  // sessionRepository: any; // Removed as it's declared in BaseChatbotController
   userMessageDebounce: { [key: string]: { message: string; timeoutId: NodeJS.Timeout } } = {};
 
   protected getFallbackBotId(settings: any): string | undefined {
