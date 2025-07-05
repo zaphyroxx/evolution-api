@@ -18,18 +18,18 @@ export class EvoaiController extends BaseChatbotController<EvoaiModel, EvoaiDto>
   ) {
     super(prismaRepository, waMonitor);
 
-    this.botRepository = this.prismaRepository.evoai;
-    this.settingsRepository = this.prismaRepository.evoaiSetting;
-    this.sessionRepository = this.prismaRepository.integrationSession;
+    // this.botRepository = this.prismaRepository.evoai; // Removed as it's initialized in BaseChatbotController
+    // this.settingsRepository = this.prismaRepository.evoaiSetting; // Removed as it's initialized in BaseChatbotController
+    // this.sessionRepository = this.prismaRepository.integrationSession; // Removed as it's initialized in BaseChatbotController
   }
 
   public readonly logger = new Logger('EvoaiController');
   protected readonly integrationName = 'Evoai';
 
   integrationEnabled = configService.get<Evoai>('EVOAI').ENABLED;
-  botRepository: any;
-  settingsRepository: any;
-  sessionRepository: any;
+  // botRepository: any; // Removed as it's declared in BaseChatbotController
+  // settingsRepository: any; // Removed as it's declared in BaseChatbotController
+  // sessionRepository: any; // Removed as it's declared in BaseChatbotController
   userMessageDebounce: { [key: string]: { message: string; timeoutId: NodeJS.Timeout } } = {};
 
   protected getFallbackBotId(settings: any): string | undefined {
