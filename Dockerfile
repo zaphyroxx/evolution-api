@@ -18,7 +18,7 @@ COPY ./public ./public
 COPY ./prisma ./prisma
 COPY ./manager ./manager
 COPY ./.env.example ./.env
-COPY ./runWithProvider.js ./
+COPY ./runWithProvider.cjs ./
 COPY ./tsup.config.ts ./
 
 COPY ./Docker ./Docker
