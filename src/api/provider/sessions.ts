@@ -7,7 +7,10 @@ type ResponseSuccess = { status: number; data?: any };
 type ResponseProvider = Promise<[ResponseSuccess?, Error?]>;
 
 export class ProviderFiles {
+  private readonly config: ProviderSession;
+
   constructor(private readonly configService: ConfigService) {
+    this.config = Object.freeze(this.configService.get<ProviderSession>('PROVIDER'));
     this.baseUrl = `http://${this.config.HOST}:${this.config.PORT}/session/${this.config.PREFIX}`;
     this.globalApiToken = this.configService.get<Auth>('AUTHENTICATION').API_KEY.KEY;
   }
@@ -16,8 +19,6 @@ export class ProviderFiles {
 
   private baseUrl: string;
   private globalApiToken: string;
-
-  private readonly config = Object.freeze(this.configService.get<ProviderSession>('PROVIDER'));
 
   get isEnabled() {
     return !!this.config?.ENABLED;
