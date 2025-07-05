@@ -296,7 +296,7 @@ export class BaileysStartupService extends ChannelStartupService {
         if (this.configService.get<Chatwoot>('CHATWOOT').ENABLED && this.localChatwoot?.enabled) {
           this.chatwootService.eventWhatsapp(
             Events.QRCODE_UPDATED,
-            { instanceName: this.instance.name, instanceId: this.instanceId },
+            { instanceName: this.instance.name, instanceId: this.instanceId } as Partial<InstanceDto>,
             { message: 'QR code limit reached, please login again', statusCode: DisconnectReason.badSession },
           );
         }
@@ -349,7 +349,6 @@ export class BaileysStartupService extends ChannelStartupService {
         if (this.configService.get<Chatwoot>('CHATWOOT').ENABLED && this.localChatwoot?.enabled) {
           this.chatwootService.eventWhatsapp(
             Events.QRCODE_UPDATED,
-            { instanceName: this.instance.name, instanceId: this.instanceId },
             {
               qrcode: { instance: this.instance.name, pairingCode: this.instance.qrcode.pairingCode, code: qr, base64 },
             },
@@ -405,7 +404,7 @@ export class BaileysStartupService extends ChannelStartupService {
         if (this.configService.get<Chatwoot>('CHATWOOT').ENABLED && this.localChatwoot?.enabled) {
           this.chatwootService.eventWhatsapp(
             Events.STATUS_INSTANCE,
-            { instanceName: this.instance.name, instanceId: this.instanceId },
+            { instanceName: this.instance.name, instanceId: this.instanceId } as Partial<InstanceDto>,
             { instance: this.instance.name, status: 'closed' },
           );
         }
@@ -454,7 +453,7 @@ export class BaileysStartupService extends ChannelStartupService {
       if (this.configService.get<Chatwoot>('CHATWOOT').ENABLED && this.localChatwoot?.enabled) {
         this.chatwootService.eventWhatsapp(
           Events.CONNECTION_UPDATE,
-          { instanceName: this.instance.name, instanceId: this.instanceId },
+          { instanceName: this.instance.name, instanceId: this.instanceId } as Partial<InstanceDto>,
           { instance: this.instance.name, status: 'open' },
         );
         this.syncChatwootLostMessages();
@@ -787,7 +786,7 @@ export class BaileysStartupService extends ChannelStartupService {
           contactsRaw.length
         ) {
           this.chatwootService.addHistoryContacts(
-            { instanceName: this.instance.name, instanceId: this.instance.id },
+            { instanceName: this.instance.name, instanceId: this.instance.id } as Partial<InstanceDto>,
             contactsRaw,
           );
           chatwootImport.importHistoryContacts(
@@ -1170,7 +1169,7 @@ export class BaileysStartupService extends ChannelStartupService {
           ) {
             const chatwootSentMessage = await this.chatwootService.eventWhatsapp(
               Events.MESSAGES_UPSERT,
-              { instanceName: this.instance.name, instanceId: this.instanceId },
+              { instanceName: this.instance.name, instanceId: this.instanceId } as Partial<InstanceDto>,
               messageRaw,
             );
 
@@ -1323,7 +1322,7 @@ export class BaileysStartupService extends ChannelStartupService {
             if (this.configService.get<Chatwoot>('CHATWOOT').ENABLED && this.localChatwoot?.enabled) {
               await this.chatwootService.eventWhatsapp(
                 Events.CONTACTS_UPDATE,
-                { instanceName: this.instance.name, instanceId: this.instanceId },
+                { instanceName: this.instance.name, instanceId: this.instanceId } as Partial<InstanceDto>,
                 contactRaw,
               );
             }
@@ -1381,7 +1380,7 @@ export class BaileysStartupService extends ChannelStartupService {
           if (this.configService.get<Chatwoot>('CHATWOOT').ENABLED && this.localChatwoot?.enabled) {
             this.chatwootService.eventWhatsapp(
               'messages.read',
-              { instanceName: this.instance.name, instanceId: this.instanceId },
+              { instanceName: this.instance.name, instanceId: this.instanceId } as Partial<InstanceDto>,
               { key: key },
             );
           }
