@@ -27,7 +27,20 @@ export class ChannelStartupService {
     public eventEmitter: EventEmitter2,
     public prismaRepository: PrismaRepository,
     public chatwootCache: CacheService,
-  ) {}
+  ) {
+    this.chatwootService = new ChatwootService(
+      waMonitor,
+      this.configService,
+      this.prismaRepository,
+      this.chatwootCache,
+    );
+
+    this.openaiService = new OpenaiService(waMonitor, this.prismaRepository, this.configService);
+
+    this.typebotService = new TypebotService(waMonitor, this.configService, this.prismaRepository, this.openaiService);
+
+    this.difyService = new DifyService(waMonitor, this.prismaRepository, this.configService, this.openaiService);
+  }
 
   public readonly logger = new Logger('ChannelStartupService');
 
@@ -38,18 +51,10 @@ export class ChannelStartupService {
   public readonly localSettings: wa.LocalSettings = {};
   public readonly localWebhook: wa.LocalWebHook = {};
 
-  public chatwootService = new ChatwootService(
-    waMonitor,
-    this.configService,
-    this.prismaRepository,
-    this.chatwootCache,
-  );
-
-  public openaiService = new OpenaiService(waMonitor, this.prismaRepository, this.configService);
-
-  public typebotService = new TypebotService(waMonitor, this.configService, this.prismaRepository, this.openaiService);
-
-  public difyService = new DifyService(waMonitor, this.prismaRepository, this.configService, this.openaiService);
+  public chatwootService: ChatwootService;
+  public openaiService: OpenaiService;
+  public typebotService: TypebotService;
+  public difyService: DifyService;
 
   public setInstance(instance: Partial<InstanceDto>) {
     this.logger.setInstance(instance.instanceName);
