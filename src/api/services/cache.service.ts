@@ -1,6 +1,12 @@
 import { ICache } from '@api/abstract/abstract.cache';
 import { Logger } from '@config/logger.config';
 import { BufferJSON } from 'baileys';
+import { createClient } from 'redis';
+
+const client = createClient({ url: process.env.CACHE_REDIS_URI });
+client.on('error', (err) => console.error('Redis Error', err));
+await client.connect();
+
 
 export class CacheService {
   private readonly logger = new Logger('CacheService');
