@@ -297,7 +297,11 @@ export class WAMonitoringService {
             token: instanceData.token,
             number: instanceData.number,
             businessId: instanceData.businessId,
-          } as Partial<InstanceDto>;
+            webhook: instanceData.webhook || '',
+            chatwootAccountId: instanceData.chatwootAccountId || '',
+            chatwootConversationPending: instanceData.chatwootConversationPending || false,
+            chatwootAutoCreate: instanceData.chatwootAutoCreate || false,
+          } as InstanceDto;
 
           this.setInstance(instance);
         }),
@@ -325,7 +329,11 @@ export class WAMonitoringService {
           token: instance.token,
           number: instance.number,
           businessId: instance.businessId,
-        } as Partial<InstanceDto>);
+          webhook: instance.webhook || '',
+          chatwootAccountId: instance.chatwootAccountId || '',
+          chatwootConversationPending: instance.chatwootConversationPending || false,
+          chatwootAutoCreate: instance.chatwootAutoCreate || false,
+        } as InstanceDto);
       }),
     );
   }
@@ -349,7 +357,11 @@ export class WAMonitoringService {
           integration: instance.integration,
           token: instance.token,
           businessId: instance.businessId,
-        } as Partial<InstanceDto>);
+          webhook: instance.webhook || '',
+          chatwootAccountId: instance.chatwootAccountId || '',
+          chatwootConversationPending: instance.chatwootConversationPending || false,
+          chatwootAutoCreate: instance.chatwootAutoCreate || false,
+        } as InstanceDto);
       }),
     );
   }
