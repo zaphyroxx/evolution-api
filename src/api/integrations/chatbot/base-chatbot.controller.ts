@@ -51,7 +51,7 @@ export abstract class BaseChatbotController<BotType = any, BotData extends BaseC
   extends ChatbotController
   implements ChatbotControllerInterface
 {
-  public readonly logger: Logger;
+  declare public readonly logger: Logger;
 
   integrationEnabled: boolean;
   botRepository: any;
