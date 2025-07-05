@@ -72,14 +72,7 @@ export class InstanceController {
         status: instanceData.status,
       });
 
-      instance.setInstance({
-        instanceName: instanceData.instanceName,
-        instanceId,
-        integration: instanceData.integration,
-        token: hash,
-        number: instanceData.number,
-        businessId: instanceData.businessId,
-      });
+      instance.setInstance(instanceData);
 
       this.waMonitor.waInstances[instance.instanceName] = instance;
       this.waMonitor.delInstanceTime(instance.instanceName);
@@ -292,17 +285,17 @@ export class InstanceController {
     }
   }
 
-  public async connectToWhatsapp({ instanceName, number = null }: InstanceDto) {
+  public async connectToWhatsapp(instanceDto: InstanceDto) {
     try {
-      const instance = this.waMonitor.waInstances[instanceName];
+      const instance = this.waMonitor.waInstances[instanceDto.instanceName];
       const state = instance?.connectionStatus?.state;
 
       if (!state) {
-        throw new BadRequestException('The "' + instanceName + '" instance does not exist');
+        throw new BadRequestException('The "' + instanceDto.instanceName + '" instance does not exist');
       }
 
       if (state == 'open') {
-        return await this.connectionState({ instanceName });
+        return await this.connectionState(instanceDto);
       }
 
       if (state == 'connecting') {
@@ -310,7 +303,7 @@ export class InstanceController {
       }
 
       if (state == 'close') {
-        await instance.connectToWhatsapp(number);
+        await instance.connectToWhatsapp(instanceDto.number);
 
         await delay(2000);
         return instance.qrCode;
@@ -318,7 +311,7 @@ export class InstanceController {
 
       return {
         instance: {
-          instanceName: instanceName,
+          instanceName: instanceDto.instanceName,
           status: state,
         },
         qrcode: instance?.qrCode,
@@ -329,28 +322,28 @@ export class InstanceController {
     }
   }
 
-  public async restartInstance({ instanceName }: InstanceDto) {
+  public async restartInstance(instanceDto: InstanceDto) {
     try {
-      const instance = this.waMonitor.waInstances[instanceName];
+      const instance = this.waMonitor.waInstances[instanceDto.instanceName];
       const state = instance?.connectionStatus?.state;
 
       if (!state) {
-        throw new BadRequestException('The "' + instanceName + '" instance does not exist');
+        throw new BadRequestException('The "' + instanceDto.instanceName + '" instance does not exist');
       }
 
       if (state == 'close') {
-        throw new BadRequestException('The "' + instanceName + '" instance is not connected');
+        throw new BadRequestException('The "' + instanceDto.instanceName + '" instance is not connected');
       } else if (state == 'open') {
         if (this.configService.get<Chatwoot>('CHATWOOT').ENABLED) instance.clearCacheChatwoot();
-        this.logger.info('restarting instance' + instanceName);
+        this.logger.info('restarting instance' + instanceDto.instanceName);
 
         instance.client?.ws?.close();
         instance.client?.end(new Error('restart'));
-        return await this.connectToWhatsapp({ instanceName });
+        return await this.connectToWhatsapp(instanceDto);
       } else if (state == 'connecting') {
         instance.client?.ws?.close();
         instance.client?.end(new Error('restart'));
-        return await this.connectToWhatsapp({ instanceName });
+        return await this.connectToWhatsapp(instanceDto);
       }
     } catch (error) {
       this.logger.error(error);
@@ -358,24 +351,24 @@ export class InstanceController {
     }
   }
 
-  public async connectionState({ instanceName }: InstanceDto) {
+  public async connectionState(instanceDto: InstanceDto) {
     return {
       instance: {
-        instanceName: instanceName,
-        state: this.waMonitor.waInstances[instanceName]?.connectionStatus?.state,
+        instanceName: instanceDto.instanceName,
+        state: this.waMonitor.waInstances[instanceDto.instanceName]?.connectionStatus?.state,
       },
     };
   }
 
-  public async fetchInstances({ instanceName, instanceId, number }: InstanceDto, key: string) {
+  public async fetchInstances(instanceDto: InstanceDto, key: string) {
     const env = this.configService.get<Auth>('AUTHENTICATION').API_KEY;
 
     if (env.KEY !== key) {
       const instancesByKey = await this.prismaRepository.instance.findMany({
         where: {
           token: key,
-          name: instanceName || undefined,
-          id: instanceId || undefined,
+          name: instanceDto.instanceName || undefined,
+          id: instanceDto.instanceId || undefined,
         },
       });
 
@@ -388,28 +381,28 @@ export class InstanceController {
       }
     }
 
-    if (instanceId || number) {
-      return this.waMonitor.instanceInfoById(instanceId, number);
+    if (instanceDto.instanceId || instanceDto.number) {
+      return this.waMonitor.instanceInfoById(instanceDto.instanceId, instanceDto.number);
     }
 
-    const instanceNames = instanceName ? [instanceName] : null;
+    const instanceNames = instanceDto.instanceName ? [instanceDto.instanceName] : null;
 
     return this.waMonitor.instanceInfo(instanceNames);
   }
 
-  public async setPresence({ instanceName }: InstanceDto, data: SetPresenceDto) {
-    return await this.waMonitor.waInstances[instanceName].setPresence(data);
+  public async setPresence(instanceDto: InstanceDto, data: SetPresenceDto) {
+    return await this.waMonitor.waInstances[instanceDto.instanceName].setPresence(data);
   }
 
-  public async logout({ instanceName }: InstanceDto) {
-    const { instance } = await this.connectionState({ instanceName });
+  public async logout(instanceDto: InstanceDto) {
+    const { instance } = await this.connectionState(instanceDto);
 
     if (instance.state === 'close') {
-      throw new BadRequestException('The "' + instanceName + '" instance is not connected');
+      throw new BadRequestException('The "' + instanceDto.instanceName + '" instance is not connected');
     }
 
     try {
-      this.waMonitor.waInstances[instanceName]?.logoutInstance();
+      this.waMonitor.waInstances[instanceDto.instanceName]?.logoutInstance();
 
       return { status: 'SUCCESS', error: false, response: { message: 'Instance logged out' } };
     } catch (error) {
@@ -417,26 +410,26 @@ export class InstanceController {
     }
   }
 
-  public async deleteInstance({ instanceName }: InstanceDto) {
-    const { instance } = await this.connectionState({ instanceName });
+  public async deleteInstance(instanceDto: InstanceDto) {
+    const { instance } = await this.connectionState(instanceDto);
     try {
-      const waInstances = this.waMonitor.waInstances[instanceName];
+      const waInstances = this.waMonitor.waInstances[instanceDto.instanceName];
       if (this.configService.get<Chatwoot>('CHATWOOT').ENABLED) waInstances?.clearCacheChatwoot();
 
       if (instance.state === 'connecting' || instance.state === 'open') {
-        await this.logout({ instanceName });
+        await this.logout(instanceDto);
       }
 
       try {
         waInstances?.sendDataWebhook(Events.INSTANCE_DELETE, {
-          instanceName,
+          instanceName: instanceDto.instanceName,
           instanceId: waInstances.instanceId,
         });
       } catch (error) {
         this.logger.error(error);
       }
 
-      this.eventEmitter.emit('remove.instance', instanceName, 'inner');
+      this.eventEmitter.emit('remove.instance', instanceDto.instanceName, 'inner');
       return { status: 'SUCCESS', error: false, response: { message: 'Instance deleted' } };
     } catch (error) {
       throw new BadRequestException(error.toString());
