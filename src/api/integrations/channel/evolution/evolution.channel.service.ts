@@ -37,7 +37,7 @@ export class EvolutionStartupService extends ChannelStartupService {
     this.client = null;
   }
 
-  override public client: any = null;
+  public override client: any = null;
 
   public stateConnection: wa.StateConnection = { state: 'open' };
 
@@ -78,11 +78,7 @@ export class EvolutionStartupService extends ChannelStartupService {
     if (this.configService.get<Chatwoot>('CHATWOOT').ENABLED && this.localChatwoot?.enabled) {
 this.chatwootService.eventWhatsapp(
   Events.STATUS_INSTANCE,
-  {
-    instanceName: this.instance.name,
-    instanceId: this.instance.id,
-    integration: instance.integration,
-  } as Partial<InstanceDto>,
+  instance,
   {
     instance: this.instance.name,
     status: 'created',
@@ -684,7 +680,7 @@ this.chatwootService.eventWhatsapp(
     if (file?.buffer) {
       mediaData.audio = file.buffer.toString('base64');
     } else {
-      console.error('El archivo o buffer no est� definido correctamente.');
+      console.error('El archivo o buffer no est  definido correctamente.');
       throw new Error('File or buffer is undefined.');
     }
 
