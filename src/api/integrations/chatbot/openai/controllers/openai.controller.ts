@@ -19,9 +19,9 @@ export class OpenaiController extends BaseChatbotController<OpenaiBot, OpenaiDto
   ) {
     super(prismaRepository, waMonitor);
 
-    this.botRepository = this.prismaRepository.openaiBot;
-    this.settingsRepository = this.prismaRepository.openaiSetting;
-    this.sessionRepository = this.prismaRepository.integrationSession;
+    // this.botRepository = this.prismaRepository.openaiBot; // Removed as it's initialized in BaseChatbotController
+    // this.settingsRepository = this.prismaRepository.openaiSetting; // Removed as it's initialized in BaseChatbotController
+    // this.sessionRepository = this.prismaRepository.integrationSession; // Removed as it's initialized in BaseChatbotController
     this.credsRepository = this.prismaRepository.openaiCreds;
   }
 
@@ -29,9 +29,9 @@ export class OpenaiController extends BaseChatbotController<OpenaiBot, OpenaiDto
   protected readonly integrationName = 'Openai';
 
   integrationEnabled = configService.get<Openai>('OPENAI').ENABLED;
-  botRepository: any;
-  settingsRepository: any;
-  sessionRepository: any;
+  // botRepository: any; // Removed as it's declared in BaseChatbotController
+  // settingsRepository: any; // Removed as it's declared in BaseChatbotController
+  // sessionRepository: any; // Removed as it's declared in BaseChatbotController
   userMessageDebounce: { [key: string]: { message: string; timeoutId: NodeJS.Timeout } } = {};
   private client: OpenAI;
   private credsRepository: any;
