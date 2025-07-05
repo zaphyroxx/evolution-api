@@ -18,18 +18,18 @@ export class DifyController extends BaseChatbotController<DifyModel, DifyDto> {
   ) {
     super(prismaRepository, waMonitor);
 
-    this.botRepository = this.prismaRepository.dify;
-    this.settingsRepository = this.prismaRepository.difySetting;
-    this.sessionRepository = this.prismaRepository.integrationSession;
+    // this.botRepository = this.prismaRepository.dify; // Removed as it's initialized in BaseChatbotController
+    // this.settingsRepository = this.prismaRepository.difySetting; // Removed as it's initialized in BaseChatbotController
+    // this.sessionRepository = this.prismaRepository.integrationSession; // Removed as it's initialized in BaseChatbotController
   }
 
   public readonly logger = new Logger('DifyController');
   protected readonly integrationName = 'Dify';
 
   integrationEnabled = configService.get<Dify>('DIFY').ENABLED;
-  botRepository: any;
-  settingsRepository: any;
-  sessionRepository: any;
+  // botRepository: any; // Removed as it's declared in BaseChatbotController
+  // settingsRepository: any; // Removed as it's declared in BaseChatbotController
+  // sessionRepository: any; // Removed as it's declared in BaseChatbotController
   userMessageDebounce: { [key: string]: { message: string; timeoutId: NodeJS.Timeout } } = {};
 
   protected getFallbackBotId(settings: any): string | undefined {
