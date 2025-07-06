@@ -68,7 +68,7 @@ export class EvolutionStartupService extends ChannelStartupService {
   public setInstance(instance: InstanceDto) {
     this.logger.setInstance(instance.instanceId);
 
-    this.instance = instance;
+    Object.assign(this.instance, instance);
 
     if (this.configService.get<Chatwoot>('CHATWOOT').ENABLED && this.localChatwoot?.enabled) {
       this.chatwootService.eventWhatsapp(
