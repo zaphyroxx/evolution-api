@@ -68,22 +68,17 @@ export class EvolutionStartupService extends ChannelStartupService {
   public setInstance(instance: InstanceDto) {
     this.logger.setInstance(instance.instanceId);
 
-    this.instance.name = instance.instanceName;
-    this.instance.id = instance.instanceId;
-    this.instance.integration = instance.integration;
-    this.instance.number = instance.number;
-    this.instance.token = instance.token;
-    this.instance.businessId = instance.businessId;
+    this.instance = instance;
 
     if (this.configService.get<Chatwoot>('CHATWOOT').ENABLED && this.localChatwoot?.enabled) {
-this.chatwootService.eventWhatsapp(
-  Events.STATUS_INSTANCE,
-  instance,
-  {
-    instance: this.instance.name,
-    status: 'created',
-  },
-);
+      this.chatwootService.eventWhatsapp(
+        Events.STATUS_INSTANCE,
+        instance,
+        {
+          instance: this.instance.instanceName,
+          status: 'created',
+        },
+      );
     }
   }
 
@@ -170,7 +165,7 @@ this.chatwootService.eventWhatsapp(
         this.sendDataWebhook(Events.MESSAGES_UPSERT, messageRaw);
 
         await chatbotController.emit({
-          instance: { instanceName: this.instance.name, instanceId: this.instanceId },
+          instance: this.instance,
           remoteJid: messageRaw.key.remoteJid,
           msg: messageRaw,
           pushName: messageRaw.pushName,
@@ -179,7 +174,7 @@ this.chatwootService.eventWhatsapp(
         if (this.configService.get<Chatwoot>('CHATWOOT').ENABLED && this.localChatwoot?.enabled) {
           const chatwootSentMessage = await this.chatwootService.eventWhatsapp(
             Events.MESSAGES_UPSERT,
-            { instanceName: this.instance.name, instanceId: this.instanceId },
+            this.instance,
             messageRaw,
           );
 
@@ -239,11 +234,7 @@ this.chatwootService.eventWhatsapp(
     if (this.configService.get<Chatwoot>('CHATWOOT').ENABLED && this.localChatwoot?.enabled) {
       await this.chatwootService.eventWhatsapp(
         Events.CONTACTS_UPDATE,
-        {
-          instanceName: this.instance.name,
-          instanceId: this.instanceId,
-          integration: this.instance.integration,
-        },
+        this.instance,
         contactRaw,
       );
     }
@@ -497,14 +488,14 @@ this.chatwootService.eventWhatsapp(
       if (this.configService.get<Chatwoot>('CHATWOOT').ENABLED && this.localChatwoot?.enabled && !isIntegration) {
         this.chatwootService.eventWhatsapp(
           Events.SEND_MESSAGE,
-          { instanceName: this.instance.name, instanceId: this.instanceId },
+          this.instance,
           messageRaw,
         );
       }
 
       if (this.configService.get<Chatwoot>('CHATWOOT').ENABLED && this.localChatwoot?.enabled && isIntegration)
         await chatbotController.emit({
-          instance: { instanceName: this.instance.name, instanceId: this.instanceId },
+          instance: this.instance,
           remoteJid: messageRaw.key.remoteJid,
           msg: messageRaw,
           pushName: messageRaw.pushName,
