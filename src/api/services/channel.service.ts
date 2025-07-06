@@ -45,7 +45,7 @@ export class ChannelStartupService {
   public readonly logger = new Logger('ChannelStartupService');
 
   public client: WASocket;
-  public readonly instance: wa.Instance = {};
+  public instance: wa.Instance & Partial<InstanceDto> = {};
   public readonly localChatwoot: wa.LocalChatwoot = {};
   public readonly localProxy: wa.LocalProxy = {};
   public readonly localSettings: wa.LocalSettings = {};
@@ -59,12 +59,7 @@ export class ChannelStartupService {
   public setInstance(instance: Partial<InstanceDto>) {
     this.logger.setInstance(instance.instanceName);
 
-    this.instance.name = instance.instanceName;
-    this.instance.id = instance.instanceId;
-    this.instance.integration = instance.integration;
-    this.instance.number = instance.number;
-    this.instance.token = instance.token;
-    this.instance.businessId = instance.businessId;
+    Object.assign(this.instance, instance);
 
     if (this.configService.get<Chatwoot>('CHATWOOT').ENABLED && this.localChatwoot?.enabled) {
       this.chatwootService.eventWhatsapp(
