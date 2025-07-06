@@ -1121,7 +1121,7 @@ export class BusinessStartupService extends ChannelStartupService {
       if (this.configService.get<Chatwoot>('CHATWOOT').ENABLED && this.localChatwoot?.enabled && !isIntegration) {
         this.chatwootService.eventWhatsapp(
           Events.SEND_MESSAGE,
-          { instanceName: this.instance.name, instanceId: this.instanceId } as Partial<InstanceDto>,
+          this.instance,
           messageRaw,
         );
       }
