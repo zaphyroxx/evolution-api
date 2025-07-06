@@ -1,3 +1,4 @@
+import { InstanceDto } from '@api/dto/instance.dto';
 import { NumberBusiness } from '@api/dto/chat.dto';
 import {
   ContactMessage,
@@ -642,7 +643,7 @@ export class BusinessStartupService extends ChannelStartupService {
         this.sendDataWebhook(Events.MESSAGES_UPSERT, messageRaw);
 
         await chatbotController.emit({
-          instance: { instanceName: this.instance.name, instanceId: this.instanceId } as Partial<InstanceDto>,
+          instance: this.instance,
           remoteJid: messageRaw.key.remoteJid,
           msg: messageRaw,
           pushName: messageRaw.pushName,
@@ -651,7 +652,7 @@ export class BusinessStartupService extends ChannelStartupService {
         if (this.configService.get<Chatwoot>('CHATWOOT').ENABLED && this.localChatwoot?.enabled) {
           const chatwootSentMessage = await this.chatwootService.eventWhatsapp(
             Events.MESSAGES_UPSERT,
-            { instanceName: this.instance.name, instanceId: this.instanceId },
+            this.instance,
             messageRaw,
           );
 
@@ -696,7 +697,7 @@ export class BusinessStartupService extends ChannelStartupService {
           if (this.configService.get<Chatwoot>('CHATWOOT').ENABLED && this.localChatwoot?.enabled) {
             await this.chatwootService.eventWhatsapp(
               Events.CONTACTS_UPDATE,
-              { instanceName: this.instance.name, instanceId: this.instanceId },
+              this.instance,
               contactRaw,
             );
           }
@@ -759,7 +760,7 @@ export class BusinessStartupService extends ChannelStartupService {
               if (this.configService.get<Chatwoot>('CHATWOOT').ENABLED && this.localChatwoot?.enabled) {
                 this.chatwootService.eventWhatsapp(
                   Events.MESSAGES_DELETE,
-                  { instanceName: this.instance.name, instanceId: this.instanceId },
+                  this.instance,
                   { key: key },
                 );
               }
@@ -1127,7 +1128,7 @@ export class BusinessStartupService extends ChannelStartupService {
 
       if (this.configService.get<Chatwoot>('CHATWOOT').ENABLED && this.localChatwoot?.enabled && isIntegration)
         await chatbotController.emit({
-          instance: { instanceName: this.instance.name, instanceId: this.instanceId } as Partial<InstanceDto>,
+          instance: this.instance,
           remoteJid: messageRaw.key.remoteJid,
           msg: messageRaw,
           pushName: messageRaw.pushName,
