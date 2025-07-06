@@ -69,7 +69,7 @@ export class ChannelStartupService {
     if (this.configService.get<Chatwoot>('CHATWOOT').ENABLED && this.localChatwoot?.enabled) {
       this.chatwootService.eventWhatsapp(
         Events.STATUS_INSTANCE,
-        { instanceName: this.instance.name },
+        this.instance,
         {
           instance: this.instance.name,
           status: 'created',
