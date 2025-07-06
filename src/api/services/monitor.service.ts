@@ -27,8 +27,9 @@ export class WAMonitoringService {
     this.removeInstance();
     this.noConnection();
 
-    Object.assign(this.db, configService.get<Database>('DATABASE'));
-    Object.assign(this.redis, configService.get<CacheConf>('CACHE'));
+    Object.assign(this.db, this.configService.get<Database>('DATABASE'));
+    Object.assign(this.redis, this.configService.get<CacheConf>('CACHE'));
+    this.providerSession = Object.freeze(this.configService.get<ProviderSession>('PROVIDER'));
   }
 
   private readonly db: Partial<Database> = {};
@@ -262,14 +263,7 @@ export class WAMonitoringService {
 
     if (!instance) return;
 
-    instance.setInstance({
-      instanceId: instanceData.instanceId,
-      instanceName: instanceData.instanceName,
-      integration: instanceData.integration,
-      token: instanceData.token,
-      number: instanceData.number,
-      businessId: instanceData.businessId,
-    });
+    instance.setInstance(instanceData);
 
     await instance.connectToWhatsapp();
 
@@ -290,20 +284,7 @@ export class WAMonitoringService {
             return;
           }
 
-          const instance = {
-            instanceId: k.split(':')[1],
-            instanceName: k.split(':')[2],
-            integration: instanceData.integration,
-            token: instanceData.token,
-            number: instanceData.number,
-            businessId: instanceData.businessId,
-            webhook: instanceData.webhook || '',
-            chatwootAccountId: instanceData.chatwootAccountId || '',
-            chatwootConversationPending: instanceData.chatwootConversationPending || false,
-            chatwootAutoCreate: instanceData.chatwootAutoCreate || false,
-          } as InstanceDto;
-
-          this.setInstance(instance);
+          this.setInstance(instanceData);
         }),
       );
     }
@@ -322,18 +303,7 @@ export class WAMonitoringService {
 
     await Promise.all(
       instances.map(async (instance) => {
-        this.setInstance({
-          instanceId: instance.id,
-          instanceName: instance.name,
-          integration: instance.integration,
-          token: instance.token,
-          number: instance.number,
-          businessId: instance.businessId,
-          webhook: instance.webhook || '',
-          chatwootAccountId: instance.chatwootAccountId || '',
-          chatwootConversationPending: instance.chatwootConversationPending || false,
-          chatwootAutoCreate: instance.chatwootAutoCreate || false,
-        } as InstanceDto);
+        this.setInstance(instance);
       }),
     );
   }
@@ -351,17 +321,7 @@ export class WAMonitoringService {
           where: { id: instanceId },
         });
 
-        this.setInstance({
-          instanceId: instance.id,
-          instanceName: instance.name,
-          integration: instance.integration,
-          token: instance.token,
-          businessId: instance.businessId,
-          webhook: instance.webhook || '',
-          chatwootAccountId: instance.chatwootAccountId || '',
-          chatwootConversationPending: instance.chatwootConversationPending || false,
-          chatwootAutoCreate: instance.chatwootAutoCreate || false,
-        } as InstanceDto);
+        this.setInstance(instance);
       }),
     );
   }
